@@ -28,12 +28,38 @@ async function run() {
     const db = client.db("kidzed");
     const toysCollection = db.collection("toys");
 
+    const indexKeys = { toyName: 1, subCategory: 1 };
+    const indexOptions = { name: "toyCategory" };
+
+    const result = await toysCollection.createIndex(indexKeys, indexOptions);
+
+    app.get("/toySearch/:text", async (req, res) => {
+      const text = req.params.text;
+      const result = await toysCollection
+        .find({
+          $or: [
+            { toyName: { $regex: text, $options: "i" } },
+            { subCategory: { $regex: text, $options: "i" } },
+          ],
+        })
+        .toArray();
+      res.send(result);
+    });
+
     app.post("/addToys", async (req, res) => {
       const body = req.body;
       const result = await toysCollection.insertOne(body);
       res.send(result);
     });
 
+    app.get("/mytoys/:text", async (req, res) => {
+      const result = await toysCollection
+        .find({ sellerName: req.params.text })
+        .sort({ price: 1 })
+        .collation({ locale: "en_US", numericOrdering: true })
+        .toArray();
+      res.send(result);
+    });
     app.get("/allToys/:text", async (req, res) => {
       //   console.log(req.params.text);
       if (
@@ -43,17 +69,13 @@ async function run() {
       ) {
         const result = await toysCollection
           .find({ subCategory: req.params.text })
+          .limit(10)
           .toArray();
         return res.send(result);
       }
-      const result = await toysCollection.find({}).toArray();
+      const result = await toysCollection.find({}).limit(20).toArray();
       res.send(result);
     });
-
-    // app.get("/allToys", async (req, res) => {
-    //   const result = await toysCollection.find({}).toArray();
-    //   res.send(result);
-    // });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

@@ -22,15 +22,15 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     //StartYOurCOde
     const db = client.db("kidzed");
     const toysCollection = db.collection("toys");
 
-    const indexKeys = { toyName: 1, subCategory: 1 };
-    const indexOptions = { name: "toyCategory" };
-    await toysCollection.createIndex(indexKeys, indexOptions);
+    // const indexKeys = { toyName: 1, subCategory: 1 };
+    // const indexOptions = { name: "toyCategory" };
+    // await toysCollection.createIndex(indexKeys, indexOptions);
 
     app.get("/toySearch/:text", async (req, res) => {
       const text = req.params.text;

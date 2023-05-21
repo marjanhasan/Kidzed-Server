@@ -77,7 +77,6 @@ async function run() {
 
     app.get("/singleToys/:id", async (req, res) => {
       const d = req.params.id;
-      console.log(d);
       const query = { _id: new ObjectId(d) };
       const result = await toysCollection.find(query).toArray();
       res.send(result);
@@ -122,5 +121,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Kidzed listening on port ${port}`);
 });

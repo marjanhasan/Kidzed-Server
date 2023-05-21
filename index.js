@@ -45,7 +45,7 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/addToys", async (req, res) => {
+    app.post("/addtoys", async (req, res) => {
       const body = req.body;
       const result = await toysCollection.insertOne(body);
       res.send(result);
@@ -59,7 +59,7 @@ async function run() {
         .toArray();
       res.send(result);
     });
-    app.get("/allToys/:text", async (req, res) => {
+    app.get("/alltoys/:text", async (req, res) => {
       if (
         req.params.text == "math" ||
         req.params.text == "language" ||
@@ -75,14 +75,19 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/singleToys/:id", async (req, res) => {
+    app.get("/alltoys", async (req, res) => {
+      const result = await toysCollection.find({}).limit(8).toArray();
+      res.send(result);
+    });
+
+    app.get("/singletoys/:id", async (req, res) => {
       const d = req.params.id;
       const query = { _id: new ObjectId(d) };
       const result = await toysCollection.find(query).toArray();
       res.send(result);
     });
 
-    app.put("/updateToys/:id", async (req, res) => {
+    app.put("/updatetoys/:id", async (req, res) => {
       const id = req.params.id;
       const body = req.body;
       const filter = { _id: new ObjectId(id) };
@@ -97,7 +102,7 @@ async function run() {
       res.send(result);
     });
 
-    app.delete("/deleteToys/:id", async (req, res) => {
+    app.delete("/deletetoys/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await toysCollection.deleteOne(query);

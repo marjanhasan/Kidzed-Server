@@ -75,6 +75,14 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/singleToys/:id", async (req, res) => {
+      const d = req.params.id;
+      console.log(d);
+      const query = { _id: new ObjectId(d) };
+      const result = await toysCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.put("/updateToys/:id", async (req, res) => {
       const id = req.params.id;
       const body = req.body;

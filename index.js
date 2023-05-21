@@ -30,8 +30,7 @@ async function run() {
 
     const indexKeys = { toyName: 1, subCategory: 1 };
     const indexOptions = { name: "toyCategory" };
-
-    const result = await toysCollection.createIndex(indexKeys, indexOptions);
+    await toysCollection.createIndex(indexKeys, indexOptions);
 
     app.get("/toySearch/:text", async (req, res) => {
       const text = req.params.text;
@@ -61,7 +60,6 @@ async function run() {
       res.send(result);
     });
     app.get("/allToys/:text", async (req, res) => {
-      //   console.log(req.params.text);
       if (
         req.params.text == "math" ||
         req.params.text == "language" ||
@@ -80,7 +78,6 @@ async function run() {
     app.put("/updateToys/:id", async (req, res) => {
       const id = req.params.id;
       const body = req.body;
-      console.log(body);
       const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
@@ -90,6 +87,13 @@ async function run() {
         },
       };
       const result = await toysCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    app.delete("/deleteToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toysCollection.deleteOne(query);
       res.send(result);
     });
 
